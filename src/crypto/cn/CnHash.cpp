@@ -26,7 +26,11 @@
 #if defined(XMRIG_ARM)
 #   include "crypto/cn/CryptoNight_arm.h"
 #else
+#ifdef __X86_64__
 #   include "crypto/cn/CryptoNight_x86.h"
+#elif defined(__PPC__)
+#   include "crypto/cn/CryptoNight_ppc.h"
+#endif
 #endif
 
 

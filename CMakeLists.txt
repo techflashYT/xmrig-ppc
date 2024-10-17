@@ -186,7 +186,7 @@ else()
             src/crypto/common/LinuxMemory.cpp
             )
 
-        set(EXTRA_LIBS pthread rt dl)
+        set(EXTRA_LIBS pthread rt dl atomic)
     elseif (XMRIG_OS_FREEBSD)
         set(EXTRA_LIBS kvm pthread)
     endif()

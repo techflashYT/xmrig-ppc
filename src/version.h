@@ -76,6 +76,9 @@
 #else
 #   if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
 #       define APP_ARCH "x86-64"
+    // TODO: plat-cleanup - ifdef XMRIG_PPC
+#   elif defined(__PPC__)
+#       define APP_ARCH "PowerPC"
 #   else
 #       define APP_ARCH "x86"
 #   endif

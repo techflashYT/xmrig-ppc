@@ -54,4 +54,9 @@ if (XMRIG_ARM)
     endif()
 else()
     list(APPEND SOURCES_BACKEND_CPU src/backend/cpu/platform/BasicCpuInfo.cpp)
+
+# TODO: plat-cleanup - separate this out into it's own block `if (XMRIG_PPC)`
+    if (XMRIG_OS_UNIX)
+        list(APPEND SOURCES_BACKEND_CPU src/backend/cpu/platform/lscpu_ppc.cpp)
+    endif()
 endif()

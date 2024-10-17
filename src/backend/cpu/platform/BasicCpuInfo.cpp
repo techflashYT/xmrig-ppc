@@ -26,7 +26,9 @@
 #ifdef _MSC_VER
 #   include <intrin.h>
 #else
+#ifdef __x86_64__
 #   include <cpuid.h>
+#endif
 #endif
 
 
@@ -39,7 +41,7 @@
 #include "backend/cpu/platform/BasicCpuInfo.h"
 #include "3rdparty/rapidjson/document.h"
 #include "crypto/common/Assembly.h"
-
+#include "base/tools/String.h"
 
 #define VENDOR_ID                  (0)
 #define PROCESSOR_INFO             (1)
@@ -57,6 +59,10 @@
 
 namespace xmrig {
 
+// TODO: plat-cleanup - gross hack putting this here
+#ifdef __PPC__
+extern String cpu_name_ppc();
+#endif
 
 constexpr size_t kCpuFlagsSize                                  = 15;
 static const std::array<const char *, kCpuFlagsSize> flagNames  = { "aes", "vaes", "avx", "avx2", "avx512f", "bmi2", "osxsave", "pdpe1gb", "sse2", "ssse3", "sse4.1", "xop", "popcnt", "cat_l3", "vm" };
@@ -77,7 +83,9 @@ static inline void cpuid(uint32_t level, int32_t output[4])
 #   ifdef _MSC_VER
     __cpuidex(output, static_cast<int>(level), 0);
 #   else
+#ifdef __x86_64__
     __cpuid_count(level, 0, output[0], output[1], output[2], output[3]);
+#endif
 #   endif
 }
 
@@ -181,6 +189,16 @@ xmrig::BasicCpuInfo::BasicCpuInfo() :
     m_threads(std::thread::hardware_concurrency())
 {
     cpu_brand_string(m_brand);
+
+    // TODO: plat-cleanup - gross hack putting this here
+#ifdef __PPC__
+#   if defined(XMRIG_OS_UNIX)
+    auto name = cpu_name_ppc();
+    if (!name.isNull()) {
+        strncpy(m_brand, name, sizeof(m_brand) - 1);
+    }
+#   endif
+#endif
 
     m_flags.set(FLAG_AES,     has_aes_ni());
     m_flags.set(FLAG_AVX,     has_avx());

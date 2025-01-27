@@ -44,6 +44,10 @@
 
 namespace xmrig {
 
+#ifdef __PPC__
+String boardNamePPC;
+#endif
+
 
 #ifdef XMRIG_OS_WIN
 static constexpr const char *kHugepagesSupported = GREEN_BOLD("permission granted");
@@ -128,6 +132,11 @@ static void print_memory(const Config *config)
                totalMem / oneGiB,
                percent
                );
+
+    // TODO: plat-cleanup - fix this
+#   ifdef __PPC__
+    Log::print(GREEN_BOLD(" * ") WHITE_BOLD("%-13s") WHITE_BOLD("%s"), "MOTHERBOARD", boardNamePPC.data());
+#   endif
 
 #   ifdef XMRIG_FEATURE_DMI
     if (!config->isDMI()) {

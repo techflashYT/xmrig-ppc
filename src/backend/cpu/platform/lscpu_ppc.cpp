@@ -2,7 +2,7 @@
  * Copyright (c) 2018      Riku Voipio <riku.voipio@iki.fi>
  * Copyright (c) 2018-2023 SChernykh   <https://github.com/SChernykh>
  * Copyright (c) 2016-2023 XMRig       <support@xmrig.com>
- * Copyright (c) 2024      Techflash   <officialTechflashYT@gmail.com>
+ * Copyright (c) 2024-2025 Techflash   <officialTechflashYT@gmail.com>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@
 namespace xmrig {
 
 
+extern String boardNamePPC;
 struct lscpu_desc
 {
     String vendor;
@@ -103,6 +104,13 @@ static bool read_basicinfo(lscpu_desc *desc)
             }
         }
 
+        if (boardNamePPC.isNull()) {
+            String tmp;
+
+            lookup(buf, "model", tmp);
+            if (!tmp.isNull()) boardNamePPC = tmp;
+        }
+
         if (desc->isReady()) {
             break;
         }
@@ -112,6 +120,9 @@ static bool read_basicinfo(lscpu_desc *desc)
     }
     if (desc->model.isNull()) {
         desc->model = "PowerPC ???";
+    }
+    if (boardNamePPC.isNull()) {
+        desc->vendor = "Unknown";
     }
 
     fclose(fp);
